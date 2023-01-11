@@ -25,8 +25,8 @@ const campgroundRoutes = require('./routes/campgrounds')
 const reviewRoutes = require('./routes/reviews')
 const userRoutes = require('./routes/users')
 
-// const dbUrl = process.env.DB_URL;
-const dbUrl = 'mongodb://localhost:27017/yelp-camp';
+const dbUrl = process.env.DB_URL;
+// const dbUrl = 'mongodb://localhost:27017/yelp-camp';
 
 mongoose.set('strictQuery', true);
 mongoose.connect(dbUrl);
@@ -49,9 +49,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(mongoSanitize());
 
+const secret = process.env.SECRET || 'segredo';
+
 const store = MongoStore.create({
     mongoUrl: dbUrl,
-    secret: 'segredo123',
+    secret: secret,
     touchAfter: 24 * 60 * 60,
 });
 
@@ -62,7 +64,7 @@ store.on('error', function(e) {
 const sessionConfig = {
     store: store,
     name: 'session',
-    secret: 'segredo123',
+    secret: secret,
     resave: false,
     saveUninitialized: true,
     cookie: {
